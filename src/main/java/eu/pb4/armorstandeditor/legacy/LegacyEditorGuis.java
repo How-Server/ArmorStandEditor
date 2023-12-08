@@ -15,8 +15,13 @@ import eu.pb4.sgui.api.elements.GuiElementBuilder;
 import eu.pb4.sgui.api.elements.GuiElementInterface;
 import eu.pb4.sgui.api.gui.AnvilInputGui;
 import eu.pb4.sgui.api.gui.SimpleGui;
+import me.drex.itsours.claim.AbstractClaim;
+import me.drex.itsours.claim.ClaimList;
+import me.drex.itsours.claim.permission.PermissionManager;
+import me.drex.itsours.claim.permission.node.Node;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -26,6 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
+import net.minecraft.registry.Registries;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
@@ -36,6 +42,7 @@ import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 @Deprecated
 public class LegacyEditorGuis {
@@ -176,8 +183,10 @@ public class LegacyEditorGuis {
                     gui.close();
                 }))
         );
-
-        gui.open();
+        Optional<AbstractClaim> claim = ClaimList.getClaimAt(entity);
+        if (claim.isPresent() && claim.get().hasPermission(player.getUuid(), PermissionManager.INTERACT_ENTITY, Node.registry(Registries.ENTITY_TYPE, EntityType.ARMOR_STAND))){
+            gui.open();
+        }
     }
 
     public static void openGui(ServerPlayerEntity player) {
@@ -397,10 +406,9 @@ public class LegacyEditorGuis {
 
     public static void openItemFrameEditor(ServerPlayerEntity player, ItemFrameEntity entity) {
         ItemFrameEntityAccessor ifa = (ItemFrameEntityAccessor) entity;
-
+        ItemFrameInventory inventory = new ItemFrameInventory(entity, player);
         SimpleGui gui = new SimpleGui(ScreenHandlerType.GENERIC_9X1, player, false);
 
-        ItemFrameInventory inventory = new ItemFrameInventory(entity);
 
         GuiElement empty = new GuiElementBuilder(Items.GRAY_STAINED_GLASS_PANE).setName(Text.literal("")).build();
 
@@ -469,7 +477,12 @@ public class LegacyEditorGuis {
                 .setCallback(((index, type, action) -> {gui.close();}))
         );
 
-        gui.open();
+        Optional<AbstractClaim> claim = ClaimList.getClaimAt(entity);
+        if (claim.isPresent() && !claim.get().hasPermission(player.getUuid(), PermissionManager.INTERACT_ENTITY, Node.registry(Registries.ENTITY_TYPE, EntityType.ITEM_FRAME))){
+            player.sendMessage(Text.literal("您無權限調整此展示匡").formatted(Formatting.RED), true);
+        }else {
+            gui.open();
+        }
     }
 
     public static BaseGui.SwitchableUi getInventoryEditor() {

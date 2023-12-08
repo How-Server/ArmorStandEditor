@@ -6,6 +6,10 @@ import eu.pb4.armorstandeditor.config.ConfigManager;
 import eu.pb4.armorstandeditor.mixin.ArmorStandEntityAccessor;
 import eu.pb4.armorstandeditor.util.ArmorStandData;
 import eu.pb4.common.protection.api.CommonProtection;
+import me.drex.itsours.claim.AbstractClaim;
+import me.drex.itsours.claim.ClaimList;
+import me.drex.itsours.claim.permission.PermissionManager;
+import me.drex.itsours.claim.permission.node.Node;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
@@ -19,6 +23,7 @@ import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -27,6 +32,9 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.world.World;
 import xyz.nucleoid.disguiselib.api.EntityDisguise;
+
+import java.util.Optional;
+
 @Deprecated
 public class LegacyEvents {
     public static void registerEvents() {
@@ -42,18 +50,20 @@ public class LegacyEvents {
 
                 Config config = ConfigManager.getConfig();
                 ItemStack itemStack = player.getMainHandStack();
-
-                if (entity instanceof EntityDisguise disguise
-                        && player instanceof ServerPlayerEntity
-                        && EditorActions.OPEN_EDITOR.canUse(player)
-                        && itemStack.getItem() == config.armorStandTool
-                        && (!config.configData.requireIsArmorStandEditorTag || itemStack.getOrCreateNbt().getBoolean("isArmorStandEditor"))) {
-                    if (disguise.isDisguised() && disguise.getDisguiseType() == EntityType.ARMOR_STAND && Permissions.check(player, "armor_stand_editor.modify_disguised", 2)) {
-                        LegacyEvents.modifyArmorStand((ServerPlayerEntity) player, (ArmorStandEntity) disguise.getDisguiseEntity(), 1, entity);
-                        return ActionResult.SUCCESS;
-                    } else if (entity instanceof ArmorStandEntity) {
-                        LegacyEvents.modifyArmorStand((ServerPlayerEntity) player, (ArmorStandEntity) entity, 1, null);
-                        return ActionResult.SUCCESS;
+                Optional<AbstractClaim> claim = ClaimList.getClaimAt(entity);
+                if (claim.isPresent() && claim.get().hasPermission(player.getUuid(), PermissionManager.INTERACT_ENTITY, Node.registry(Registries.ENTITY_TYPE, EntityType.ARMOR_STAND))){
+                    if (entity instanceof EntityDisguise disguise
+                            && player instanceof ServerPlayerEntity
+                            && EditorActions.OPEN_EDITOR.canUse(player)
+                            && itemStack.getItem() == config.armorStandTool
+                            && (!config.configData.requireIsArmorStandEditorTag || itemStack.getOrCreateNbt().getBoolean("isArmorStandEditor"))) {
+                        if (disguise.isDisguised() && disguise.getDisguiseType() == EntityType.ARMOR_STAND && Permissions.check(player, "armor_stand_editor.modify_disguised", 2)) {
+                            LegacyEvents.modifyArmorStand((ServerPlayerEntity) player, (ArmorStandEntity) disguise.getDisguiseEntity(), 1, entity);
+                            return ActionResult.SUCCESS;
+                        } else if (entity instanceof ArmorStandEntity) {
+                            LegacyEvents.modifyArmorStand((ServerPlayerEntity) player, (ArmorStandEntity) entity, 1, null);
+                            return ActionResult.SUCCESS;
+                        }
                     }
                 }
 
@@ -71,17 +81,20 @@ public class LegacyEvents {
 
                 Config config = ConfigManager.getConfig();
                 ItemStack itemStack = player.getMainHandStack();
-                if (entity instanceof EntityDisguise disguise
-                        && player instanceof ServerPlayerEntity
-                        && EditorActions.OPEN_EDITOR.canUse(player)
-                        && itemStack.getItem() == config.armorStandTool
-                        && (!config.configData.requireIsArmorStandEditorTag || itemStack.getOrCreateNbt().getBoolean("isArmorStandEditor"))) {
-                    if (disguise.isDisguised() && disguise.getDisguiseType() == EntityType.ARMOR_STAND) {
-                        LegacyEvents.modifyArmorStand((ServerPlayerEntity) player, (ArmorStandEntity) disguise.getDisguiseEntity(), -1, entity);
-                        return ActionResult.SUCCESS;
-                    } else if (entity instanceof ArmorStandEntity) {
-                        LegacyEvents.modifyArmorStand((ServerPlayerEntity) player, (ArmorStandEntity) entity, -1, null);
-                        return ActionResult.SUCCESS;
+                Optional<AbstractClaim> claim = ClaimList.getClaimAt(entity);
+                if (claim.isPresent() && claim.get().hasPermission(player.getUuid(), PermissionManager.INTERACT_ENTITY, Node.registry(Registries.ENTITY_TYPE, EntityType.ARMOR_STAND))){
+                    if (entity instanceof EntityDisguise disguise
+                            && player instanceof ServerPlayerEntity
+                            && EditorActions.OPEN_EDITOR.canUse(player)
+                            && itemStack.getItem() == config.armorStandTool
+                            && (!config.configData.requireIsArmorStandEditorTag || itemStack.getOrCreateNbt().getBoolean("isArmorStandEditor"))) {
+                        if (disguise.isDisguised() && disguise.getDisguiseType() == EntityType.ARMOR_STAND) {
+                            LegacyEvents.modifyArmorStand((ServerPlayerEntity) player, (ArmorStandEntity) disguise.getDisguiseEntity(), -1, entity);
+                            return ActionResult.SUCCESS;
+                        } else if (entity instanceof ArmorStandEntity) {
+                            LegacyEvents.modifyArmorStand((ServerPlayerEntity) player, (ArmorStandEntity) entity, -1, null);
+                            return ActionResult.SUCCESS;
+                        }
                     }
                 }
 

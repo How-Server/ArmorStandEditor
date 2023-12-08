@@ -43,7 +43,7 @@ dependencies {
 
 	//modRuntime "com.github.SuperCoder7979:databreaker:0.2.6"
 	modCompileOnly('xyz.nucleoid:disguiselib-fabric:1.2.2')
-
+	modImplementation files('dependencies/ItsOurs-1.4.0-mc-1.20.3-pre1.jar')
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
 }
