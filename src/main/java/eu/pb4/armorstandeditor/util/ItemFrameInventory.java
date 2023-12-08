@@ -11,9 +11,11 @@ import java.util.List;
 
 public class ItemFrameInventory implements Inventory {
     private final ItemFrameEntity entity;
+    private final PlayerEntity player;
 
-    public ItemFrameInventory(ItemFrameEntity entity) {
+    public ItemFrameInventory(ItemFrameEntity entity, PlayerEntity player) {
         this.entity = entity;
+        this.player = player;
     }
 
     @Override
@@ -51,6 +53,16 @@ public class ItemFrameInventory implements Inventory {
 
     @Override
     public void setStack(int slot, ItemStack stack) {
+        PlayerEntity player = this.player;
+        ItemStack singleStack = stack.copy();
+        singleStack.setCount(singleStack.getCount() - 1);
+        this.entity.setHeldItemStack(stack);
+        if (!stack.isEmpty() && stack.getCount() > 1) {
+            if (!player.getInventory().insertStack(singleStack)) {
+                player.dropItem(singleStack, false);
+            }
+            return;
+        }
         this.entity.setHeldItemStack(stack);
     }
 
