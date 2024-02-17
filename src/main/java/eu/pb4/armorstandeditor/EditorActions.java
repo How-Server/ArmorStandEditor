@@ -1,8 +1,18 @@
 package eu.pb4.armorstandeditor;
 
 import eu.pb4.armorstandeditor.config.ConfigManager;
+import me.drex.itsours.claim.AbstractClaim;
+import me.drex.itsours.claim.ClaimList;
+import me.drex.itsours.claim.permission.PermissionManager;
+import me.drex.itsours.claim.permission.node.Node;
 import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.Registries;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+
+import java.util.Optional;
 
 public enum EditorActions {
     OPEN_EDITOR("open_editor"),
@@ -41,8 +51,14 @@ public enum EditorActions {
     }
 
     public boolean canUse(PlayerEntity player) {
-        return Permissions.check(player, "armor_stand_editor.action." + this.permission,
-                ConfigManager.getConfig().configData.allowedByDefault.contains(this.permission) ? 0 : 2
+        Optional<AbstractClaim> claim = ClaimList.getClaimAt(player);
+        if (claim.isPresent() && !claim.get().hasPermission(player.getUuid(), PermissionManager.INTERACT_ENTITY, Node.registry(Registries.ENTITY_TYPE, EntityType.ARMOR_STAND))){
+            player.sendMessage(Text.literal("您無權限調整此盔甲座").formatted(Formatting.RED), true);
+            return false;
+        }else {
+            return Permissions.check(player, "armor_stand_editor.action." + this.permission,
+                    ConfigManager.getConfig().configData.allowedByDefault.contains(this.permission) ? 0 : 2
         );
     }
+}
 }
