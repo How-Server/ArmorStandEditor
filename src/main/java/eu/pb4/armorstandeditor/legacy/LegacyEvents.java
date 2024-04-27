@@ -56,7 +56,7 @@ public class LegacyEvents {
                         && player instanceof ServerPlayerEntity
                         && EditorActions.OPEN_EDITOR.canUse(player)
                         && itemStack.getItem() == config.armorStandTool
-                        && (!config.configData.requireIsArmorStandEditorTag || itemStack.getOrCreateNbt().getBoolean("isArmorStandEditor"))) {
+                        && (!config.configData.requireIsArmorStandEditorTag || itemStack.get(DataComponentTypes.CUSTOM_DATA).getNbt().getBoolean("isArmorStandEditor"))) {
                     if (disguise.isDisguised() && disguise.getDisguiseType() == EntityType.ARMOR_STAND && Permissions.check(player, "armor_stand_editor.modify_disguised", 2)) {
                         LegacyEvents.modifyArmorStand((ServerPlayerEntity) player, (ArmorStandEntity) disguise.getDisguiseEntity(), 1, entity);
                         return ActionResult.SUCCESS;
@@ -115,7 +115,7 @@ public class LegacyEvents {
                         && player instanceof ServerPlayerEntity
                         && EditorActions.OPEN_EDITOR.canUse(player)
                         && itemStack.getItem() == config.armorStandTool
-                        && (!config.configData.requireIsArmorStandEditorTag || itemStack.getOrCreateNbt().getBoolean("isArmorStandEditor"))) {
+                        && (!config.configData.requireIsArmorStandEditorTag || itemStack.get(DataComponentTypes.CUSTOM_DATA).getNbt().getBoolean("isArmorStandEditor"))) {
 
                     LegacyEvents.modifyArmorStand((ServerPlayerEntity) player, (ArmorStandEntity) entity, 1, null);
 
