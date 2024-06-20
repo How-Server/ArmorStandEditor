@@ -20,7 +20,7 @@ public class ItemFrameInventory implements Inventory {
 
     @Override
     public int size() {
-        return 6;
+        return 1;
     }
 
     @Override
@@ -34,11 +34,17 @@ public class ItemFrameInventory implements Inventory {
 
     @Override
     public ItemStack getStack(int slot) {
+        if (this.entity.isRemoved()) {
+            return ItemStack.EMPTY;
+        }
         return entity.getHeldItemStack();
     }
 
     @Override
     public ItemStack removeStack(int slot, int amount) {
+        if (this.entity.isRemoved()) {
+            return ItemStack.EMPTY;
+        }
         ItemStack result = Inventories.splitStack(this.getItems(), slot, amount);
         if (!result.isEmpty()) {
             markDirty();
@@ -48,19 +54,15 @@ public class ItemFrameInventory implements Inventory {
 
     @Override
     public ItemStack removeStack(int slot) {
+        if (this.entity.isRemoved()) {
+            return ItemStack.EMPTY;
+        }
         return Inventories.removeStack(this.getItems(), slot);
     }
 
     @Override
     public void setStack(int slot, ItemStack stack) {
-        PlayerEntity player = this.player;
-        ItemStack singleStack = stack.copy();
-        singleStack.setCount(singleStack.getCount() - 1);
-        this.entity.setHeldItemStack(stack);
-        if (!stack.isEmpty() && stack.getCount() > 1) {
-            if (!player.getInventory().insertStack(singleStack)) {
-                player.dropItem(singleStack, false);
-            }
+        if (this.entity.isRemoved()) {
             return;
         }
         this.entity.setHeldItemStack(stack);
@@ -78,6 +80,9 @@ public class ItemFrameInventory implements Inventory {
 
     @Override
     public void clear() {
+        if (this.entity.isRemoved()) {
+            return;
+        }
         this.entity.setHeldItemStack(ItemStack.EMPTY);
     }
 }

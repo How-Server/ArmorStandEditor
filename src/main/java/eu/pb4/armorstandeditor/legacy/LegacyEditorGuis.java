@@ -15,6 +15,8 @@ import eu.pb4.sgui.api.elements.GuiElementBuilder;
 import eu.pb4.sgui.api.elements.GuiElementInterface;
 import eu.pb4.sgui.api.gui.AnvilInputGui;
 import eu.pb4.sgui.api.gui.SimpleGui;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.LoreComponent;
 import me.drex.itsours.claim.AbstractClaim;
 import me.drex.itsours.claim.ClaimList;
 import me.drex.itsours.claim.permission.PermissionManager;
@@ -241,7 +243,7 @@ public class LegacyEditorGuis {
 
         gui.setSlot(42, new GuiElementBuilder(Items.MOJANG_BANNER_PATTERN)
                 .setName(TextUtils.gui("name.legacy.presets").setStyle(Style.EMPTY.withItalic(false)))
-                .hideFlags()
+                .hideDefaultTooltip()
                 .setCallback((x, y, z) -> openPresetSelector(player, () -> LegacyEditorGuis.openGui(player))
                 ));
     }
@@ -395,8 +397,15 @@ public class LegacyEditorGuis {
     public static void openItemFrameEditor(ServerPlayerEntity player, ItemFrameEntity entity) {
         ItemFrameEntityAccessor ifa = (ItemFrameEntityAccessor) entity;
         ItemFrameInventory inventory = new ItemFrameInventory(entity, player);
-        SimpleGui gui = new SimpleGui(ScreenHandlerType.GENERIC_9X1, player, false);
-
+        SimpleGui gui = new SimpleGui(ScreenHandlerType.GENERIC_9X1, player, false) {
+            @Override
+            public void onTick() {
+                if (entity.isRemoved() || entity.getPos().squaredDistanceTo(player.getPos()) > 24 * 24) {
+                    this.close();
+                }
+                super.onTick();
+            }
+        };;
 
         GuiElement empty = new GuiElementBuilder(Items.GRAY_STAINED_GLASS_PANE).setName(Text.literal("")).build();
 

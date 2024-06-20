@@ -1,3 +1,15 @@
+buildscript {
+	dependencies {
+		classpath "de.guntram.mcmod:crowdin-translate:1.4+1.19.3"
+	}
+	repositories {
+		maven {
+			name = 'CrowdinTranslate source'
+			url = "https://minecraft.guntram.de/maven/"
+		}
+	}
+}
+
 plugins {
 	id 'fabric-loom' version '1.6.+'
 	id 'maven-publish'
@@ -12,16 +24,23 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version + '+' + project.minecraft_version
 group = project.maven_group
 
+apply plugin: 'de.guntram.mcmod.crowdin-translate'
+crowdintranslate.crowdinProjectName = 'patbox-mods'
+crowdintranslate.jsonSourceName = 'armor_stand_editor'
+crowdintranslate.minecraftProjectName = '../data/armor_stand_editor'
+crowdintranslate.verbose = false
+
+
 repositories {
 	// Add repositories to retrieve artifacts from in here.
 	// You should only use this when depending on other mods because
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
-	mavenCentral()
+	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 	maven { url 'https://jitpack.io' }
 	maven { url = "https://maven.nucleoid.xyz/" }
-
+	mavenCentral()
 	//mavenLocal()
 }
 
@@ -35,11 +54,11 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	modImplementation include("me.lucko:fabric-permissions-api:0.3.1")
-	modImplementation include("eu.pb4:sgui:1.5.0+1.20.5")
-	modImplementation include("eu.pb4:player-data-api:0.4.0+1.20.3")
+	modImplementation include("eu.pb4:sgui:1.6.0+1.21")
+	modImplementation include("eu.pb4:player-data-api:0.6.0+1.21")
 	modImplementation include("eu.pb4:common-protection-api:1.0.0")
 
-	modImplementation include("xyz.nucleoid:server-translations-api:2.3.0+1.20.5-rc2")
+	modImplementation include("xyz.nucleoid:server-translations-api:2.3.1+1.21-pre2")
 
 	//modRuntime "com.github.SuperCoder7979:databreaker:0.2.6"
 	modCompileOnly('xyz.nucleoid:disguiselib-fabric:1.2.2')
@@ -63,7 +82,7 @@ tasks.withType(JavaCompile).configureEach {
 	// If Javadoc is generated, this must be specified in that task too.
 	it.options.encoding = "UTF-8"
 
-	it.options.release = 21
+	it.options.release = 17
 }
 
 java {
