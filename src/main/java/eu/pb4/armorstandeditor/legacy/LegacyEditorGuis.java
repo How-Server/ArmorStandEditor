@@ -18,9 +18,9 @@ import eu.pb4.sgui.api.gui.SimpleGui;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import me.drex.itsours.claim.AbstractClaim;
-import me.drex.itsours.claim.ClaimList;
-import me.drex.itsours.claim.permission.PermissionManager;
-import me.drex.itsours.claim.permission.node.Node;
+import me.drex.itsours.claim.list.ClaimList;
+import me.drex.itsours.claim.flags.FlagsManager;
+import me.drex.itsours.claim.flags.node.Node;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.enchantment.Enchantments;
@@ -189,7 +189,7 @@ public class LegacyEditorGuis {
                 }))
         );
         Optional<AbstractClaim> claim = ClaimList.getClaimAt(entity);
-        if (claim.isPresent() && claim.get().hasPermission(player.getUuid(), PermissionManager.INTERACT_ENTITY, Node.registry(Registries.ENTITY_TYPE, EntityType.ARMOR_STAND))){
+        if (claim.isPresent() && claim.get().checkAction(player.getUuid(), FlagsManager.INTERACT_ENTITY, Node.registry(Registries.ENTITY_TYPE, EntityType.ARMOR_STAND))){
             gui.open();
         }
     }
@@ -475,7 +475,7 @@ public class LegacyEditorGuis {
         );
 
         Optional<AbstractClaim> claim = ClaimList.getClaimAt(entity);
-        if (claim.isPresent() && !claim.get().hasPermission(player.getUuid(), PermissionManager.INTERACT_ENTITY, Node.registry(Registries.ENTITY_TYPE, EntityType.ITEM_FRAME))){
+        if (claim.isPresent() && !claim.get().checkAction(player.getUuid(), FlagsManager.INTERACT_ENTITY, Node.registry(Registries.ENTITY_TYPE, EntityType.ITEM_FRAME))){
             player.sendMessage(Text.literal("您無權限調整此展示匡").formatted(Formatting.RED), true);
         }else {
             gui.open();

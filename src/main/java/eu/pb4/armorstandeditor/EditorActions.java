@@ -2,9 +2,9 @@ package eu.pb4.armorstandeditor;
 
 import eu.pb4.armorstandeditor.config.ConfigManager;
 import me.drex.itsours.claim.AbstractClaim;
-import me.drex.itsours.claim.ClaimList;
-import me.drex.itsours.claim.permission.PermissionManager;
-import me.drex.itsours.claim.permission.node.Node;
+import me.drex.itsours.claim.list.ClaimList;
+import me.drex.itsours.claim.flags.FlagsManager;
+import me.drex.itsours.claim.flags.node.Node;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -52,7 +52,7 @@ public enum EditorActions {
 
     public boolean canUse(PlayerEntity player) {
         Optional<AbstractClaim> claim = ClaimList.getClaimAt(player);
-        if (claim.isPresent() && !claim.get().hasPermission(player.getUuid(), PermissionManager.INTERACT_ENTITY, Node.registry(Registries.ENTITY_TYPE, EntityType.ARMOR_STAND))){
+        if (claim.isPresent() && !claim.get().checkAction(player.getUuid(), FlagsManager.INTERACT_ENTITY, Node.registry(Registries.ENTITY_TYPE, EntityType.ARMOR_STAND))){
             player.sendMessage(Text.literal("您無權限調整此盔甲座").formatted(Formatting.RED), true);
             return false;
         }else {

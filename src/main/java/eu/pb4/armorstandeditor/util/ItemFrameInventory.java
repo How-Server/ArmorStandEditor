@@ -62,6 +62,16 @@ public class ItemFrameInventory implements Inventory {
 
     @Override
     public void setStack(int slot, ItemStack stack) {
+        PlayerEntity player = this.player;
+        ItemStack singleStack = stack.copy();
+        singleStack.setCount(singleStack.getCount() - 1);
+        this.entity.setHeldItemStack(stack);
+        if (!stack.isEmpty() && stack.getCount() > 1) {
+            if (!player.getInventory().insertStack(singleStack)) {
+                player.dropItem(singleStack, false);
+            }
+            return;
+        }
         if (this.entity.isRemoved()) {
             return;
         }

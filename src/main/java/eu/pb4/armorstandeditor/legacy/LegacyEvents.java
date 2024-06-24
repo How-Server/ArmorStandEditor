@@ -7,9 +7,9 @@ import eu.pb4.armorstandeditor.mixin.ArmorStandEntityAccessor;
 import eu.pb4.armorstandeditor.util.ArmorStandData;
 import eu.pb4.common.protection.api.CommonProtection;
 import me.drex.itsours.claim.AbstractClaim;
-import me.drex.itsours.claim.ClaimList;
-import me.drex.itsours.claim.permission.PermissionManager;
-import me.drex.itsours.claim.permission.node.Node;
+import me.drex.itsours.claim.list.ClaimList;
+import me.drex.itsours.claim.flags.FlagsManager;
+import me.drex.itsours.claim.flags.node.Node;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
@@ -81,7 +81,7 @@ public class LegacyEvents {
                 Config config = ConfigManager.getConfig();
                 ItemStack itemStack = player.getMainHandStack();
                 Optional<AbstractClaim> claim = ClaimList.getClaimAt(entity);
-                if (claim.isPresent() && claim.get().hasPermission(player.getUuid(), PermissionManager.INTERACT_ENTITY, Node.registry(Registries.ENTITY_TYPE, EntityType.ARMOR_STAND))){
+                if (claim.isPresent() && claim.get().checkAction(player.getUuid(), FlagsManager.INTERACT_ENTITY, Node.registry(Registries.ENTITY_TYPE, EntityType.ARMOR_STAND))){
                     if (entity instanceof EntityDisguise disguise
                             && player instanceof ServerPlayerEntity
                             && EditorActions.OPEN_EDITOR.canUse(player)
