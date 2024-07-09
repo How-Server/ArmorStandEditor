@@ -1,13 +1,9 @@
 package eu.pb4.armorstandeditor.legacy;
 
 import eu.pb4.armorstandeditor.EditorActions;
-import eu.pb4.armorstandeditor.config.ConfigManager;
 import eu.pb4.armorstandeditor.util.ArmorStandData;
 import eu.pb4.armorstandeditor.util.PlayerExt;
-import eu.pb4.playerdata.api.PlayerDataApi;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtByte;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 @Deprecated
@@ -29,13 +25,6 @@ public interface LegacyPlayerExt {
 
 
     static boolean useLegacy(PlayerEntity player) {
-        if (player instanceof ServerPlayerEntity serverPlayerEntity) {
-            var data = PlayerDataApi.getGlobalDataFor(serverPlayerEntity, LEGACY_UI, NbtByte.TYPE);
-
-            if (data != null) {
-                return data.intValue() > 0;
-            }
-        }
-        return ConfigManager.getConfig().configData.useLegacyUiByDefault;
+        return false;
     }
 }
