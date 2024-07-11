@@ -8,6 +8,7 @@ import me.drex.itsours.claim.flags.node.Node;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -52,8 +53,11 @@ public enum EditorActions {
 
     public boolean canUse(PlayerEntity player) {
         Optional<AbstractClaim> claim = ClaimList.getClaimAt(player);
+        if (!player.getMainHandStack().getItem().equals(Items.FLINT)) {
+            return false;
+        }
         if (claim.isPresent() && !claim.get().checkAction(player.getUuid(), FlagsManager.INTERACT_ENTITY, Node.registry(Registries.ENTITY_TYPE, EntityType.ARMOR_STAND))){
-            player.sendMessage(Text.literal("您無權限調整此盔甲座").formatted(Formatting.RED), true);
+            player.sendMessage(Text.literal("您無權限調整此物品").formatted(Formatting.RED), true);
             return false;
         }else {
             return Permissions.check(player, "armor_stand_editor.action." + this.permission,
