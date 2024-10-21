@@ -23,7 +23,7 @@ public class ItemFrameEditorGui extends SimpleGui {
         super(ScreenHandlerType.GENERIC_9X1, player, false);
         this.entity = frameEntity;
 
-        var inventory = new ItemFrameInventory(entity);
+        var inventory = new ItemFrameInventory(entity, player);
         var ifa = (eu.pb4.armorstandeditor.mixin.ItemFrameEntityAccessor) entity;
 
         var empty = new GuiElementBuilder(Items.GRAY_STAINED_GLASS_PANE).hideTooltip().build();
