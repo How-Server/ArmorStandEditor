@@ -1,6 +1,6 @@
 {
   "id": "$walking",
-  "name": "Walking",
+  "name": "走路",
   "author": "Patbox",
   "noGravity": false,
   "hidePlate": true,
