@@ -7,6 +7,7 @@ import eu.pb4.armorstandeditor.gui.BaseWorldGui;
 import eu.pb4.armorstandeditor.util.ArmorStandData;
 import eu.pb4.armorstandeditor.util.PlayerExt;
 import eu.pb4.sgui.api.GuiHelpers;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.decoration.ItemFrameEntity;
@@ -29,6 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
+import java.util.Objects;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity implements PlayerExt {
@@ -66,7 +68,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         try {
             if (ConfigManager.getConfig().configData.holdingToolSpawnsParticles) {
                 ase$tickTimer++;
-                if (ase$tickTimer > 10 && this.getMainHandStack().getItem() == ConfigManager.getConfig().armorStandTool) {
+                if (ase$tickTimer > 10 && this.getMainHandStack().getItem() == ConfigManager.getConfig().armorStandTool
+                && Objects.requireNonNull(this.getMainHandStack().get(DataComponentTypes.CUSTOM_MODEL_DATA)).floats().isEmpty()) {
                     ase$tickTimer = 0;
                     List<ArmorStandEntity> armorStands = this.getWorld().getEntitiesByClass(ArmorStandEntity.class, new Box(this.getBlockPos().add(10, 10, 10).toCenterPos(), this.getBlockPos().add(-10, -10, -10).toCenterPos()), entity -> !entity.isMarker());
 
