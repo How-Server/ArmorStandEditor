@@ -69,7 +69,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             if (ConfigManager.getConfig().configData.holdingToolSpawnsParticles) {
                 ase$tickTimer++;
                 if (ase$tickTimer > 10 && this.getMainHandStack().getItem() == ConfigManager.getConfig().armorStandTool
-                && Objects.requireNonNull(this.getMainHandStack().get(DataComponentTypes.CUSTOM_MODEL_DATA)).floats().isEmpty()) {
+                && !this.getMainHandStack().contains(DataComponentTypes.CUSTOM_MODEL_DATA)) {
                     ase$tickTimer = 0;
                     List<ArmorStandEntity> armorStands = this.getWorld().getEntitiesByClass(ArmorStandEntity.class, new Box(this.getBlockPos().add(10, 10, 10).toCenterPos(), this.getBlockPos().add(-10, -10, -10).toCenterPos()), entity -> !entity.isMarker());
 
