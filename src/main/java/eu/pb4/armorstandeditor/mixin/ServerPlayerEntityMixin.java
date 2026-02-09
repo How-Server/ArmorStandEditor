@@ -7,6 +7,8 @@ import eu.pb4.armorstandeditor.gui.BaseWorldGui;
 import eu.pb4.armorstandeditor.util.ArmorStandData;
 import eu.pb4.armorstandeditor.util.PlayerExt;
 import eu.pb4.sgui.api.GuiHelpers;
+import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.core.component.DataComponents;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -66,8 +68,8 @@ public abstract class ServerPlayerEntityMixin extends Player implements PlayerEx
         try {
             if (ConfigManager.getConfig().configData.renderTargetParticles) {
                 ase$tickTimer++;
-                if (ase$tickTimer > 10 && this.getMainHandStack().getItem() == ConfigManager.getConfig().armorStandTool
-                && !this.getMainHandStack().contains(DataComponentTypes.CUSTOM_MODEL_DATA)
+                if (ase$tickTimer > 10 && this.getMainHandItem().getItem() == ConfigManager.getConfig().armorStandTool
+                && !this.getMainHandItem().has(DataComponents.CUSTOM_MODEL_DATA)
                 && Permissions.check(this, "armor_stand_editor")) {
                     ase$tickTimer = 0;
                     var armorStands = this.level().getEntitiesOfClass(ArmorStand.class, new AABB(this.blockPosition().offset(10, 10, 10).getCenter(), this.blockPosition().offset(-10, -10, -10).getCenter()), entity -> !entity.isMarker());

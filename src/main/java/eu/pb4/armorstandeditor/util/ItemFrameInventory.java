@@ -10,9 +10,9 @@ import net.minecraft.world.item.ItemStack;
 
 public class ItemFrameInventory implements Container {
     private final ItemFrame entity;
-    private final PlayerEntity player;
+    private final Player player;
 
-    public ItemFrameInventory(ItemFrameEntity entity, PlayerEntity player) {
+    public ItemFrameInventory(ItemFrame entity, Player player) {
         this.entity = entity;
         this.player = player;
     }
@@ -71,13 +71,13 @@ public class ItemFrameInventory implements Container {
 
     @Override
     public void setItem(int slot, ItemStack stack) {
-        PlayerEntity player = this.player;
+        Player player = this.player;
         ItemStack singleStack = stack.copy();
         singleStack.setCount(singleStack.getCount() - 1);
-        this.entity.setHeldItemStack(stack);
+        this.entity.setItem(stack);
         if (!stack.isEmpty() && stack.getCount() > 1) {
-            if (!player.getInventory().insertStack(singleStack)) {
-                player.dropItem(singleStack, false);
+            if (!player.getInventory().add(singleStack)) {
+                player.drop(singleStack, false);
             }
             return;
         }
