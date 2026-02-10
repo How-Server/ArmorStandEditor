@@ -116,5 +116,6 @@
   "gui.armor_stand_editor.name.legacy.rename": "重新命名",
   "gui.armor_stand_editor.name.legacy.presets": "範本",
   "text.armor_stand_editor.about.version": "版本： %s",
-  "text.armor_stand_editor.about.contributors": "貢獻者"
+  "text.armor_stand_editor.about.contributors": "貢獻者",
+  "gui.armor_stand_editor.property.invulnerable": "無法破壞: %s"
 }
